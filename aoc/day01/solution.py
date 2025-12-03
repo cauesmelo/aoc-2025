@@ -1,6 +1,5 @@
 """Day 01:"""
 
-import math
 from aoc.utils import read_lines
 
 
@@ -39,63 +38,32 @@ def part2(lines: list[str]) -> int:
     password = 0
 
     for line in lines:
-        print("The dial is", dial_pos, end="")
-        print("\t|| rotated", line, end="")
+        # print("The dial is", dial_pos, end="")
+        # print("\t|| rotated", line, end="")
         value = int(line[1:])
+        direction = line[0]
 
-        clicked = False
+        current_clicks = 0
 
-        if line.startswith("L"):
-            diff = dial_pos - value
-
-            if diff < 0:
-                clicks = math.ceil(-diff / 100)
-
-                if clicks > 0:
-                    clicked = True
-
-                password += clicks
-                print("\t|| clicks", clicks, end="")
+        for _ in range(value):
+            if direction == "L":
+                dial_pos = (dial_pos - 1) % 100
             else:
-                print("\t|| no clicks", end="")
+                dial_pos = (dial_pos + 1) % 100
 
-            dial_pos = diff % 100
+            if dial_pos == 0:
+                current_clicks += 1
+                password += 1
 
-            print("\t|| diff", diff, end="")
-
-        else:
-            diff = dial_pos + value
-
-            if diff > 100:
-                clicks = abs(math.ceil(-diff / 100))
-
-                if clicks > 0:
-                    clicked = True
-
-                password += clicks
-                print("\t|| clicks", clicks, end="")
-            else:
-                print("\t|| no clicks", end="")
-
-            dial_pos = diff % 100
-            print("\t|| diff", diff, end="")
-
-        print("\t|| to point at", dial_pos, end="")
-
-        if dial_pos == 0 and clicked is False:
-            print("\t|| add to password")
-            password += 1
-        else:
-            print()
-
-        clicked = False
+        # print("\t|| clicks", current_clicks, end="")
+        # print("\t|| to point at", dial_pos)
 
     return password
 
 
 def main():
-    # lines = read_lines(DAY)
-    lines = read_lines(DAY, filename="example.txt")
+    lines = read_lines(DAY)
+    # lines = read_lines(DAY, filename="example.txt")
 
     print(f"Part 1: {part1(lines)}")
     print(f"Part 2: {part2(lines)}")
