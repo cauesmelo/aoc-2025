@@ -23,6 +23,10 @@ class RerunHandler(FileSystemEventHandler):
         if event.is_directory:
             return
 
+        # Ignore __pycache__ changes
+        if "__pycache__" in event.src_path:
+            return
+
         # Debounce rapid events
         now = time.time()
         if now - self.last_run < self.debounce:
