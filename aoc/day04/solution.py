@@ -50,9 +50,9 @@ def count_rolls(matrix: list[list[str]]):
     return count
 
 
-def part1(lines: list[str]) -> int:
+def solve_part1(lines: list[str]) -> [int, list[list[str]]]:
     matrix = [list(line) for line in lines]
-    matrix_copy = [row.copy() for row in matrix]
+    res_matrix = [row.copy() for row in matrix]
 
     accessible_rolls = 0
 
@@ -66,22 +66,38 @@ def part1(lines: list[str]) -> int:
 
                 if count < 4:
                     accessible_rolls += 1
-                    matrix_copy[row_idx][col_idx] = "x"
+                    res_matrix[row_idx][col_idx] = "x"
 
     if DEBUG:
         print("Final matrix:")
-        for row in matrix_copy:
+        for row in res_matrix:
             for ch in row:
                 print(ch, end=" ")
             print()
         print("---")
 
+    return accessible_rolls, res_matrix
+
+
+def part1(lines: list[str]) -> int:
+    accessible_rolls, _ = solve_part1(lines)
     return accessible_rolls
 
 
 def part2(lines: list[str]) -> int:
-    """Solve part 2."""
-    return 0
+    accessible_rolls_count = 0
+    curr_matrix = lines
+
+    while True:
+        accessible_rolls, res_matrix = solve_part1(curr_matrix)
+
+        if accessible_rolls == 0:
+            break
+
+        curr_matrix = res_matrix
+        accessible_rolls_count += accessible_rolls
+
+    return accessible_rolls_count
 
 
 def main():
@@ -92,7 +108,7 @@ def main():
     os.system("clear")
 
     print(f"Part 1: {part1(lines)}")
-    # print(f"Part 2: {part2(lines)}")
+    print(f"Part 2: {part2(lines)}")
 
 
 if __name__ == "__main__":
