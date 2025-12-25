@@ -3,16 +3,19 @@
 from pathlib import Path
 
 
-def read_input(day: int, example=False) -> str:
+def read_input(day: int, example=False, keep_ws=False) -> str:
     """Read the input file for a given day."""
     filename = "example.txt" if example else "input.txt"
     day_folder = Path(__file__).parent / f"day{day:02d}"
+    if keep_ws:
+        return (day_folder / filename).read_text()
+
     return (day_folder / filename).read_text().strip()
 
 
-def read_lines(day: int, example=False) -> list[str]:
+def read_lines(day: int, example=False, keep_ws=False) -> list[str]:
     """Read the input file as a list of lines."""
-    return read_input(day, example).splitlines()
+    return read_input(day, example, keep_ws).splitlines()
 
 
 def read_ints(day: int, example=False) -> list[int]:

@@ -1,6 +1,6 @@
 """Day 06:"""
 
-from aoc.utils import read_lines
+from aoc.utils import read_grid, read_lines
 
 
 DAY = 6
@@ -39,14 +39,64 @@ def part1(lines: list[str]) -> int:
 
 def part2(lines: list[str]) -> int:
     """Solve part 2."""
-    return 0
+
+    width = len(lines[0]) - 1
+    height = len(lines)
+
+    total = 0
+    memory = []
+    buffer = ""
+
+    for col in range(width, -1, -1):
+        for line in range(height):
+            ch = lines[line][col]
+
+            if ch != " " and ch != "*" and ch != "+":
+                buffer += ch
+                continue
+
+            if buffer != "" and ch == " ":
+                n = int(buffer)
+                buffer = ""
+                memory.append(n)
+                continue
+
+            if ch == "*":
+                if buffer != "":
+                    n = int(buffer)
+                    buffer = ""
+                    memory.append(n)
+
+                local_sum = memory[0]
+                for val in memory[1:]:
+                    local_sum *= val
+
+                total += local_sum
+                memory = []
+                continue
+
+            if ch == "+":
+                if buffer != "":
+                    n = int(buffer)
+                    buffer = ""
+                    memory.append(n)
+
+                local_sum = memory[0]
+                for val in memory[1:]:
+                    local_sum += val
+
+                total += local_sum
+                memory = []
+                continue
+
+    return total
 
 
 def main():
-    lines = read_lines(DAY, example=False)
+    lines = read_lines(DAY, example=False, keep_ws=True)
 
     print(f"Part 1: {part1(lines)}")
-    # print(f"Part 2: {part2(lines)}")
+    print(f"Part 2: {part2(lines)}")
 
 
 if __name__ == "__main__":
