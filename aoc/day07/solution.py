@@ -1,6 +1,7 @@
 """Day 07:"""
 
 from aoc.utils import read_lines
+from functools import lru_cache
 
 
 DAY = 7
@@ -9,14 +10,7 @@ DAY = 7
 def part1(lines: list[str]) -> int:
     """Solve part 1."""
 
-    chs: list[list[str]] = []
-
-    for line in lines:
-        list_of_ch = []
-        for ch in line:
-            list_of_ch.append(ch)
-
-        chs.append(list_of_ch)
+    chs = build_matrix(lines)
 
     height = len(chs)
     width = len(chs[0])
@@ -54,16 +48,66 @@ def part1(lines: list[str]) -> int:
     return split_count
 
 
+def build_matrix(lines: list[str]) -> list[list[str]]:
+    chs: list[list[str]] = []
+    for line in lines:
+        list_of_ch = []
+        for ch in line:
+            list_of_ch.append(ch)
+        chs.append(list_of_ch)
+    return chs
+
+
+def copy_matrix(chs: list[list[str]]) -> list[list[str]]:
+    return [row.copy() for row in chs]
+
+
+def run_timeline(chs: list[list[str]], start_line: int, start_col: int) -> int:
+    height = len(chs)
+    width = len(chs[0])
+
+    @lru_cache(None)
+    def dfs(line: int, col: int) -> int:
+        while True:
+            if line + 1 >= height:
+                return 1
+
+            next_ch = chs[line + 1][col]
+
+            if next_ch == ".":
+                line += 1
+                continue
+
+            if next_ch == "^":
+                timelines = 0
+
+                if col - 1 >= 0:
+                    timelines += dfs(line + 1, col - 1)
+
+                if col + 1 < width:
+                    timelines += dfs(line + 1, col + 1)
+
+                return timelines
+
+            line += 1
+
+    return dfs(start_line, start_col)
+
+
 def part2(lines: list[str]) -> int:
-    """Solve part 2."""
-    return 0
+    chs = build_matrix(lines)
+
+    for r in range(len(chs)):
+        for c in range(len(chs[0])):
+            if chs[r][c] == "S":
+                return run_timeline(chs, r, c)
 
 
 def main():
     lines = read_lines(DAY, example=False)
 
     print(f"Part 1: {part1(lines)}")
-    # print(f"Part 2: {part2(lines)}")
+    print(f"Part 2: {part2(lines)}")
 
 
 if __name__ == "__main__":
