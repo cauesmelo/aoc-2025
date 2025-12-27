@@ -1,4 +1,4 @@
-"""Day 08: """
+"""Day 08:"""
 
 from aoc.utils import read_lines
 
@@ -17,12 +17,11 @@ def part2(lines: list[str]) -> int:
 
 
 def main():
-    lines = read_lines(DAY)
-    
+    lines = read_lines(DAY, example=True)
+
     print(f"Part 1: {part1(lines)}")
     print(f"Part 2: {part2(lines)}")
 
 
 if __name__ == "__main__":
     main()
-
